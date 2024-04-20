@@ -1,0 +1,706 @@
+//1. Membuat Database Baru (dbpegawai)
+MariaDB [(none)]> CREATE DATABASE dbpegawai;
+Query OK, 1 row affected (0.001 sec)
+
+//2. Membuka Database(dbpegawai)
+MariaDB [(none)]> USE dbpegawai;
+Database changed
+
+//3 Membuat Tabel baru(divisi)
+MariaDB [dbpegawai]> CREATE TABLE divisi(
+    -> id int primary key auto_increment,
+    -> nama varchar(30) not null unique);
+Query OK, 0 rows affected (0.018 sec)
+
+//4. Menampilkan Desk Tabel divisi
+MariaDB [dbpegawai]> DESC divisi;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int(11)     | NO   | PRI | NULL    | auto_increment |
+| nama  | varchar(30) | NO   | UNI | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+2 rows in set (0.015 sec)
+
+//5. Membuat tabel Baru(jabatan)
+MariaDB [dbpegawai]> CREATE TABLE jabatan(
+    -> id int primary key auto_increment,
+    -> nama varchar(30) not null unique);
+Query OK, 0 rows affected (0.017 sec)
+
+
+//6. Menampilkan Desk Tabel jabatan
+MariaDB [dbpegawai]> DESC jabatan;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int(11)     | NO   | PRI | NULL    | auto_increment |
+| nama  | varchar(30) | NO   | UNI | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+2 rows in set (0.011 sec)\
+
+
+//7 Membuat tabel Baru(pegawai)
+Sesuai Desk soal
+MariaDB [dbpegawai]> CREATE TABLE pegawai(
+    -> id int primary key auto_increment,
+    -> nip char(5) NOT NULL UNIQUE,
+    -> nama VARCHAR(30) NOT NULL,
+    -> gender ENUM ('Laki-Laki','Perempuan') NOT NULL,
+    -> tmp_lahir VARCHAR(30) NOT NULL,
+    -> tgl_lahir DATE NOT NULL,
+    -> iddivisi INT NOT NULL REFERENCES divisi(id),
+    -> idjabatan INT NOT NULL REFERENCES jabatan(id),
+    -> alamat TEXT);
+Query OK, 0 rows affected (0.022 sec)
+
+
+//8. Menampilkan Desk Tabel(pegawai)
+MariaDB [dbpegawai]> DESC pegawai;
++-----------+-------------------------------+------+-----+---------+----------------+
+| Field     | Type                          | Null | Key | Default | Extra          |
++-----------+-------------------------------+------+-----+---------+----------------+
+| id        | int(11)                       | NO   | PRI | NULL    | auto_increment |
+| nip       | char(5)                       | NO   | UNI | NULL    |                |
+| nama      | varchar(30)                   | NO   |     | NULL    |                |
+| gender    | enum('Laki-Laki','Perempuan') | NO   |     | NULL    |                |
+| tmp_lahir | varchar(30)                   | NO   |     | NULL    |                |
+| tgl_lahir | date                          | NO   |     | NULL    |                |
+| iddivisi  | int(11)                       | NO   |     | NULL    |                |
+| idjabatan | int(11)                       | NO   |     | NULL    |                |
+| alamat    | text                          | YES  |     | NULL    |                |
++-----------+-------------------------------+------+-----+---------+----------------+
+9 rows in set (0.006 sec)
+
+//9. Menampilkan Tabel-tabel yang ada di dbpegawai
+MariaDB [dbpegawai]> SHOW TABLES;
++---------------------+
+| Tables_in_dbpegawai |
++---------------------+
+| divisi              |
+| jabatan             |
+| pegawai             |
++---------------------+
+3 rows in set (0.001 sec)
+
+//10.Menginput data Divisi (SDM,Keuangan,Marketing)
+MariaDB [dbpegawai]> INSERT INTO divisi VALUES
+    -> ('','SDM'), ('','Keuangan'),('','Marketing'),('','IT');
+Query OK, 4 rows affected, 4 warnings (0.012 sec)
+Records: 4  Duplicates: 0  Warnings: 4
+
+//11.Menampilkan seluruh data divisi
+MariaDB [dbpegawai]> SELECT * FROM divisi;
++----+-----------+
+| id | nama      |
++----+-----------+
+|  4 | IT        |
+|  2 | Keuangan  |
+|  3 | Marketing |
+|  1 | SDM       |
++----+-----------+
+4 rows in set (0.001 sec)
+
+//12.Menginput Data jabatan(Direktur,Manajer,Asisten Manajer, Staff)
+MariaDB [dbpegawai]> INSERT INTO jabatan VALUES
+    -> ('','Direktur'),('','Manajer'),('','Asisten Manajer'),('','Staff');
+Query OK, 4 rows affected, 4 warnings (0.010 sec)
+Records: 4  Duplicates: 0  Warnings: 4
+
+//13.Menampilkan seluruh data jabatan
+MariaDB [dbpegawai]> SELECT * FROM jabatan;
++----+-----------------+
+| id | nama            |
++----+-----------------+
+|  3 | Asisten Manajer |
+|  1 | Direktur        |
+|  2 | Manajer         |
+|  4 | Staff           |
++----+-----------------+
+4 rows in set (0.001 sec)
+
+//14. Input 20 orang pegawai ( 1 divisi 5 orang, untuk gender dan jabatan diacak)
+MariaDB [dbpegawai]> INSERT INTO pegawai(
+    -> nip,nama,gender,tmp_lahir,tgl_lahir,iddivisi,idjabatan,alamat) VALUES
+    -> ('22222','Siti Rizkiyah','Perempuan','Depok','2004-09-13',4,1,'Depok'),
+    -> ('22232','Gita Farah S','Perempuan','Jakarta','2005-11-13',4,2,'Jakarta'),
+    -> ('22233','Siti Sadiyah','Perempuan','Bogor','2006-09-01',4,3,'Bogor'),
+    -> ('22234','Najwa Lutfiah','Perempuan','Bogor','2004-03-01',4,2,'Bogor'),
+    -> ('22235','Irdad Suryani','Perempuan','Bima','2002-12-16',3,3,'Bima'),
+    -> ('22236','Siti Khorunnisa','Perempuan','Tanggerang','2003-09-02',3,1,'Depok'),
+    -> ('22237','Zulfikar Rahman','Laki-Laki','Bima','2003-12-04',3,3,'Bima'),
+    -> ('22238','Imam Zulfikar','Laki-Laki','Bima','2002-12-02',3,2,'Bima'),
+    -> ('22239','Muhammad Arief','Laki-Laki','Bekasi','2002-09-02',3,1,'Depok'),
+    -> ('22240','Iman Dafa','Laki-Laki','Bekasi','2008-09-07',3,2,'Bima'),
+    -> ('22241','Putri Tari','Perempuan','Bima','2008-11-07',2,2,'Kupang'),
+    -> ('22242','Muhammad Agus','Laki-laki','Aceh','2001-03-03',1,1,'Aceh'),
+    -> ('22243','Bagus Damar','Laki-laki','Bali','2001-12-05',3,3,'Bali'),
+    -> ('22244','Selly Dea','Perempuan','Aceh','2001-09-04',3,2,'Batam'),
+    -> ('22245','Oktavia Putri','Perempuan','Aceh','2001-01-01',2,2,'Jakarta'),
+    -> ('22246','Ammar Deib','Laki-Laki','Bandung','2003-01-01',2,4,'Bandung'),
+    -> ('22247','Reza Andin','Laki-Laki','Batam','2007-07-01',3,4,'Bali'),
+    -> ('22248','Izzul Mubarrok','Laki-Laki','Bima','2007-07-07',3,3,'Bali'),
+    -> ('22249','Nur Fadhillah','Perempuan','Bima','2002-07-07',3,3,'Bima'),
+    -> ('22250','Nur Fajirah','Perempuan','Bali','2000-07-02',3,2,'Bima');
+Query OK, 20 rows affected (0.094 sec)
+Records: 20  Duplicates: 0  Warnings: 0
+
+//15. Menampilkan seluruh Data pegawai
+MariaDB [dbpegawai]> SELECT * FROM pegawai;
++----+-------+-----------------+---------------+------------+------------+----------+-----------+---------+-------------+------+
+| id | nip   | nama            | jenis_kelamin | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat  | berat_badan | umur |
++----+-------+-----------------+---------------+------------+------------+----------+-----------+---------+-------------+------+
+|  1 | 11111 | Siti Rizkiyah   | Perempuan     | Depok      | 0000-00-00 |        4 |         1 | depok   |          64 |   57 |
+| 35 | 22222 | Siti Rizkiyah   | Perempuan     | Bima       | 2004-09-13 |        4 |         3 | Bima    |          69 |   50 |
+| 36 | 22232 | Gita Farah S    | Perempuan     | Jakarta    | 2005-11-13 |        4 |         2 | Jakarta |         116 |   59 |
+| 37 | 22233 | Siti Sadiyah    | Perempuan     | Bogor      | 2006-09-01 |        4 |         3 | Bogor   |          94 |   44 |
+| 38 | 22234 | Najwa Lutfiah   | Perempuan     | Bogor      | 2004-03-01 |        4 |         2 | Bogor   |          81 |   24 |
+| 39 | 22235 | Irdad Suryani   | Perempuan     | Bima       | 2002-12-16 |        3 |         3 | Bima    |          84 |   49 |
+| 40 | 22236 | Siti Khorunnisa | Perempuan     | Tanggerang | 2003-09-02 |        3 |         1 | Depok   |          57 |   35 |
+| 41 | 22237 | Zulfikar Rahman | Laki-Laki     | Bima       | 2003-12-04 |        3 |         3 | Bima    |          73 |   46 |
+| 42 | 22238 | Imam Zulfikar   | Laki-Laki     | Bima       | 2002-12-02 |        3 |         3 | Bima    |          74 |   27 |
+| 43 | 22239 | Muhammad Arief  | Laki-Laki     | Bekasi     | 2002-09-02 |        3 |         1 | Depok   |         111 |   56 |
+| 44 | 22240 | Iman Dafa       | Laki-Laki     | Bekasi     | 2008-09-07 |        3 |         2 | Bima    |          54 |   58 |
+| 45 | 22241 | Putri Tari      | Perempuan     | Bima       | 2008-11-07 |        2 |         2 | Kupang  |          57 |   26 |
+| 46 | 22242 | Muhammad Agus   | Laki-Laki     | Aceh       | 2001-03-03 |        1 |         1 | Aceh    |          83 |   55 |
+| 47 | 22243 | Bagus Damar     | Laki-Laki     | Bali       | 2001-12-05 |        3 |         3 | Bali    |          47 |   57 |
+| 48 | 22244 | Selly Dea       | Perempuan     | Aceh       | 2001-09-04 |        3 |         2 | Batam   |         104 |   21 |
+| 49 | 22245 | Oktavia Putri   | Perempuan     | Aceh       | 2001-01-01 |        2 |         2 | Jakarta |         101 |   36 |
+| 50 | 22246 | Ammar Deib      | Laki-Laki     | Bandung    | 2003-01-01 |        2 |         4 | Bandung |          73 |   57 |
+| 51 | 22247 | Reza Andin      | Laki-Laki     | Batam      | 2007-07-01 |        3 |         4 | Bali    |         102 |   35 |
+| 52 | 22248 | Izzul Mubarrok  | Laki-Laki     | Bima       | 2007-07-07 |        3 |         3 | Bali    |          92 |   26 |
++----+-------+-----------------+---------------+------------+------------+----------+-----------+---------+-------------+------+
+19 rows in set (0.001 sec)
+
+//16. Ubah data 5 orang pegawai (dengan ketentuan ubah 3 kolom(bebas))
+MariaDB [dbpegawai]> UPDATE pegawai
+MariaDB [dbpegawai]> UPDATE pegawai
+    -> SET tmp_lahir = 'Bima', idjabatan = 3, alamat = 'Bima'
+    -> WHERE id IN (35,41,42,53,54);
+Query OK, 3 rows affected (0.015 sec)
+Rows matched: 5  Changed: 3  Warnings: 0
+
+//17. Menghapus dua data paling akhir
+MariaDB [dbpegawai]> DELETE FROM pegawai
+    -> ORDER BY id DESC
+    -> LIMIT 2;
+Query OK, 2 rows affected (0.004 sec)
+
+//18. Menambahkan Kolom Berat Badan sesuai deskripsi
+MariaDB [dbpegawai]> ALTER TABLE pegawai
+    -> ADD COLUMN IF NOT EXISTS
+    -> berat_badan FLOAT NOT NULL;
+Query OK, 0 rows affected (0.009 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+//menginput data secara random
+MariaDB [dbpegawai]> UPDATE pegawai
+    -> SET berat_badan = FLOOR(RAND()*80)+40;
+Query OK, 19 rows affected (0.005 sec)
+Rows matched: 19  Changed: 19  Warnings: 0
+
+MariaDB [dbpegawai]> SELECT*FROM pegawai;
++----+-------+-----------------+-----------+------------+------------+----------+-----------+---------+-------------+
+| id | nip   | nama            | gender    | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat  | berat_badan |
++----+-------+-----------------+-----------+------------+------------+----------+-----------+---------+-------------+
+|  1 | 11111 | Siti Rizkiyah   | Perempuan | Depok      | 0000-00-00 |        4 |         1 | depok   |          64 |
+| 35 | 22222 | Siti Rizkiyah   | Perempuan | Bima       | 2004-09-13 |        4 |         3 | Bima    |          69 |
+| 36 | 22232 | Gita Farah S    | Perempuan | Jakarta    | 2005-11-13 |        4 |         2 | Jakarta |         116 |
+| 37 | 22233 | Siti Sadiyah    | Perempuan | Bogor      | 2006-09-01 |        4 |         3 | Bogor   |          94 |
+| 38 | 22234 | Najwa Lutfiah   | Perempuan | Bogor      | 2004-03-01 |        4 |         2 | Bogor   |          81 |
+| 39 | 22235 | Irdad Suryani   | Perempuan | Bima       | 2002-12-16 |        3 |         3 | Bima    |          84 |
+| 40 | 22236 | Siti Khorunnisa | Perempuan | Tanggerang | 2003-09-02 |        3 |         1 | Depok   |          57 |
+| 41 | 22237 | Zulfikar Rahman | Laki-Laki | Bima       | 2003-12-04 |        3 |         3 | Bima    |          73 |
+| 42 | 22238 | Imam Zulfikar   | Laki-Laki | Bima       | 2002-12-02 |        3 |         3 | Bima    |          74 |
+| 43 | 22239 | Muhammad Arief  | Laki-Laki | Bekasi     | 2002-09-02 |        3 |         1 | Depok   |         111 |
+| 44 | 22240 | Iman Dafa       | Laki-Laki | Bekasi     | 2008-09-07 |        3 |         2 | Bima    |          54 |
+| 45 | 22241 | Putri Tari      | Perempuan | Bima       | 2008-11-07 |        2 |         2 | Kupang  |          57 |
+| 46 | 22242 | Muhammad Agus   | Laki-Laki | Aceh       | 2001-03-03 |        1 |         1 | Aceh    |          83 |
+| 47 | 22243 | Bagus Damar     | Laki-Laki | Bali       | 2001-12-05 |        3 |         3 | Bali    |          47 |
+| 48 | 22244 | Selly Dea       | Perempuan | Aceh       | 2001-09-04 |        3 |         2 | Batam   |         104 |
+| 49 | 22245 | Oktavia Putri   | Perempuan | Aceh       | 2001-01-01 |        2 |         2 | Jakarta |         101 |
+| 50 | 22246 | Ammar Deib      | Laki-Laki | Bandung    | 2003-01-01 |        2 |         4 | Bandung |          73 |
+| 51 | 22247 | Reza Andin      | Laki-Laki | Batam      | 2007-07-01 |        3 |         4 | Bali    |         102 |
+| 52 | 22248 | Izzul Mubarrok  | Laki-Laki | Bima       | 2007-07-07 |        3 |         3 | Bali    |          92 |
++----+-------+-----------------+-----------+------------+------------+----------+-----------+---------+-------------+
+19 rows in set (0.001 sec)
+
+
+//19. Gunakan alter tabel pada tabel pegawai untuk menambahkan kolom baru umur
+MariaDB [dbpegawai]> ALTER TABLE pegawai
+    -> ADD COLUMN IF NOT EXISTS
+    -> umur INT NOT NULL;
+Query OK, 0 rows affected (0.008 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+//mengisi dengan umur random(querry dapet searching)
+MariaDB [dbpegawai]> UPDATE pegawai
+    -> SET umur = FLOOR(RAND()*40)+20;
+Query OK, 19 rows affected (0.005 sec)
+Rows matched: 19  Changed: 19  Warnings: 0
+
+MariaDB [dbpegawai]> SELECT*FROM pegawai;
++----+-------+-----------------+-----------+------------+------------+----------+-----------+---------+-------------+------+
+| id | nip   | nama            | gender    | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat  | berat_badan | umur |
++----+-------+-----------------+-----------+------------+------------+----------+-----------+---------+-------------+------+
+|  1 | 11111 | Siti Rizkiyah   | Perempuan | Depok      | 0000-00-00 |        4 |         1 | depok   |          64 |   57 |
+| 35 | 22222 | Siti Rizkiyah   | Perempuan | Bima       | 2004-09-13 |        4 |         3 | Bima    |          69 |   50 |
+| 36 | 22232 | Gita Farah S    | Perempuan | Jakarta    | 2005-11-13 |        4 |         2 | Jakarta |         116 |   59 |
+| 37 | 22233 | Siti Sadiyah    | Perempuan | Bogor      | 2006-09-01 |        4 |         3 | Bogor   |          94 |   44 |
+| 38 | 22234 | Najwa Lutfiah   | Perempuan | Bogor      | 2004-03-01 |        4 |         2 | Bogor   |          81 |   24 |
+| 39 | 22235 | Irdad Suryani   | Perempuan | Bima       | 2002-12-16 |        3 |         3 | Bima    |          84 |   49 |
+| 40 | 22236 | Siti Khorunnisa | Perempuan | Tanggerang | 2003-09-02 |        3 |         1 | Depok   |          57 |   35 |
+| 41 | 22237 | Zulfikar Rahman | Laki-Laki | Bima       | 2003-12-04 |        3 |         3 | Bima    |          73 |   46 |
+| 42 | 22238 | Imam Zulfikar   | Laki-Laki | Bima       | 2002-12-02 |        3 |         3 | Bima    |          74 |   27 |
+| 43 | 22239 | Muhammad Arief  | Laki-Laki | Bekasi     | 2002-09-02 |        3 |         1 | Depok   |         111 |   56 |
+| 44 | 22240 | Iman Dafa       | Laki-Laki | Bekasi     | 2008-09-07 |        3 |         2 | Bima    |          54 |   58 |
+| 45 | 22241 | Putri Tari      | Perempuan | Bima       | 2008-11-07 |        2 |         2 | Kupang  |          57 |   26 |
+| 46 | 22242 | Muhammad Agus   | Laki-Laki | Aceh       | 2001-03-03 |        1 |         1 | Aceh    |          83 |   55 |
+| 47 | 22243 | Bagus Damar     | Laki-Laki | Bali       | 2001-12-05 |        3 |         3 | Bali    |          47 |   57 |
+| 48 | 22244 | Selly Dea       | Perempuan | Aceh       | 2001-09-04 |        3 |         2 | Batam   |         104 |   21 |
+| 49 | 22245 | Oktavia Putri   | Perempuan | Aceh       | 2001-01-01 |        2 |         2 | Jakarta |         101 |   36 |
+| 50 | 22246 | Ammar Deib      | Laki-Laki | Bandung    | 2003-01-01 |        2 |         4 | Bandung |          73 |   57 |
+| 51 | 22247 | Reza Andin      | Laki-Laki | Batam      | 2007-07-01 |        3 |         4 | Bali    |         102 |   35 |
+| 52 | 22248 | Izzul Mubarrok  | Laki-Laki | Bima       | 2007-07-07 |        3 |         3 | Bali    |          92 |   26 |
++----+-------+-----------------+-----------+------------+------------+----------+-----------+---------+-------------+------+
+19 rows in set (0.000 sec)
+
+//20.Mengubah kolom gender menjadi jenis_kelamin
+MariaDB [dbpegawai]> ALTER TABLE pegawai
+    -> CHANGE COLUMN gender jenis_kelamin ENUM('Laki-Laki','Perempuan') NOT NULL;
+Query OK, 0 rows affected (0.019 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+//21. Menampilkan Kolom(nip,nama,jenis_kelamin,alamat)
+MariaDB [dbpegawai]> SELECT nip,nama,jenis_kelamin,alamat FROM pegawai;
++-------+-----------------+---------------+---------+
+| nip   | nama            | jenis_kelamin | alamat  |
++-------+-----------------+---------------+---------+
+| 11111 | Siti Rizkiyah   | Perempuan     | depok   |
+| 22222 | Siti Rizkiyah   | Perempuan     | Bima    |
+| 22232 | Gita Farah S    | Perempuan     | Jakarta |
+| 22233 | Siti Sadiyah    | Perempuan     | Bogor   |
+| 22234 | Najwa Lutfiah   | Perempuan     | Bogor   |
+| 22235 | Irdad Suryani   | Perempuan     | Bima    |
+| 22236 | Siti Khorunnisa | Perempuan     | Depok   |
+| 22237 | Zulfikar Rahman | Laki-Laki     | Bima    |
+| 22238 | Imam Zulfikar   | Laki-Laki     | Bima    |
+| 22239 | Muhammad Arief  | Laki-Laki     | Depok   |
+| 22240 | Iman Dafa       | Laki-Laki     | Bima    |
+| 22241 | Putri Tari      | Perempuan     | Kupang  |
+| 22242 | Muhammad Agus   | Laki-Laki     | Aceh    |
+| 22243 | Bagus Damar     | Laki-Laki     | Bali    |
+| 22244 | Selly Dea       | Perempuan     | Batam   |
+| 22245 | Oktavia Putri   | Perempuan     | Jakarta |
+| 22246 | Ammar Deib      | Laki-Laki     | Bandung |
+| 22247 | Reza Andin      | Laki-Laki     | Bali    |
+| 22248 | Izzul Mubarrok  | Laki-Laki     | Bali    |
++-------+-----------------+---------------+---------+
+19 rows in set (0.001 sec)
+
+
+//22. Menampilkan baris dengan jenis_kelamin laki-laki
+MariaDB [dbpegawai]> SELECT * FROM pegawai
+    -> WHERE jenis_kelamin LIKE '%Laki-Laki';
++----+-------+-----------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+| id | nip   | nama            | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat  | berat_badan | umur |
++----+-------+-----------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+| 41 | 22237 | Zulfikar Rahman | Laki-Laki     | Bima      | 2003-12-04 |        3 |         3 | Bima    |          73 |   46 |
+| 42 | 22238 | Imam Zulfikar   | Laki-Laki     | Bima      | 2002-12-02 |        3 |         3 | Bima    |          74 |   27 |
+| 43 | 22239 | Muhammad Arief  | Laki-Laki     | Bekasi    | 2002-09-02 |        3 |         1 | Depok   |         111 |   56 |
+| 44 | 22240 | Iman Dafa       | Laki-Laki     | Bekasi    | 2008-09-07 |        3 |         2 | Bima    |          54 |   58 |
+| 46 | 22242 | Muhammad Agus   | Laki-Laki     | Aceh      | 2001-03-03 |        1 |         1 | Aceh    |          83 |   55 |
+| 47 | 22243 | Bagus Damar     | Laki-Laki     | Bali      | 2001-12-05 |        3 |         3 | Bali    |          47 |   57 |
+| 50 | 22246 | Ammar Deib      | Laki-Laki     | Bandung   | 2003-01-01 |        2 |         4 | Bandung |          73 |   57 |
+| 51 | 22247 | Reza Andin      | Laki-Laki     | Batam     | 2007-07-01 |        3 |         4 | Bali    |         102 |   35 |
+| 52 | 22248 | Izzul Mubarrok  | Laki-Laki     | Bima      | 2007-07-07 |        3 |         3 | Bali    |          92 |   26 |
++----+-------+-----------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+9 rows in set (0.001 sec)
+
+//23. Menampilkan iddivisi IT/4 gender/jenis_kelamin Perempuan
+MariaDB [dbpegawai]> SELECT * FROM pegawai
+    -> WHERE iddivisi = 4 AND jenis_kelamin = 'Perempuan';
++----+-------+---------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+| id | nip   | nama          | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat  | berat_badan | umur |
++----+-------+---------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+|  1 | 11111 | Siti Rizkiyah | Perempuan     | Depok     | 0000-00-00 |        4 |         1 | depok   |          64 |   57 |
+| 35 | 22222 | Siti Rizkiyah | Perempuan     | Bima      | 2004-09-13 |        4 |         3 | Bima    |          69 |   50 |
+| 36 | 22232 | Gita Farah S  | Perempuan     | Jakarta   | 2005-11-13 |        4 |         2 | Jakarta |         116 |   59 |
+| 37 | 22233 | Siti Sadiyah  | Perempuan     | Bogor     | 2006-09-01 |        4 |         3 | Bogor   |          94 |   44 |
+| 38 | 22234 | Najwa Lutfiah | Perempuan     | Bogor     | 2004-03-01 |        4 |         2 | Bogor   |          81 |   24 |
++----+-------+---------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+5 rows in set (0.003 sec)
+
+//atau dengan querry
+MariaDB [dbpegawai]> SELECT * FROM pegawai
+    -> WHERE iddivisi = (SELECT id FROM divisi WHERE nama = 'IT')
+    -> AND jenis_kelamin = 'Perempuan';
++----+-------+---------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+| id | nip   | nama          | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat  | berat_badan | umur |
++----+-------+---------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+| 45 | 22241 | Putri Tari    | Perempuan     | Bima      | 2008-11-07 |        2 |         2 | Kupang  |          57 |   26 |
+| 49 | 22245 | Oktavia Putri | Perempuan     | Aceh      | 2001-01-01 |        2 |         2 | Jakarta |         101 |   36 |
++----+-------+---------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+2 rows in set (0.004 sec)
+
+//24. Menampilkan baris tertentu(umur > 30 dan tmp_lahir = jakarta)
+MariaDB [dbpegawai]> SELECT * FROM pegawai
+    -> WHERE umur > 30 AND tmp_lahir = 'Jakarta';
++----+-------+--------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+| id | nip   | nama         | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat  | berat_badan | umur |
++----+-------+--------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+| 36 | 22232 | Gita Farah S | Perempuan     | Jakarta   | 2005-11-13 |        4 |         2 | Jakarta |         116 |   59 |
++----+-------+--------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+1 row in set (0.001 sec)
+
+
+//25. Menampilkan baris(iddivsi = 3/marketing, umur > 30, jenis-kelamin perempuan)
+MariaDB [dbpegawai]> SELECT * FROM pegawai
+    -> WHERE  iddivisi = 3 AND umur > 30 AND jenis_kelamin = 'Perempuan';
++----+-------+-----------------+---------------+------------+------------+----------+-----------+--------+-------------+------+
+| id | nip   | nama            | jenis_kelamin | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat | berat_badan | umur |
++----+-------+-----------------+---------------+------------+------------+----------+-----------+--------+-------------+------+
+| 39 | 22235 | Irdad Suryani   | Perempuan     | Bima       | 2002-12-16 |        3 |         3 | Bima   |          84 |   49 |
+| 40 | 22236 | Siti Khorunnisa | Perempuan     | Tanggerang | 2003-09-02 |        3 |         1 | Depok  |          57 |   35 |
++----+-------+-----------------+---------------+------------+------------+----------+-----------+--------+-------------+------+
+2 rows in set (0.001 sec)
+
+
+//26.Menampilkan nip(klausa key)
+MariaDB [dbpegawai]> SELECT * FROM pegawai
+    -> WHERE nip = '11111';
++----+-------+---------------+---------------+-----------+------------+----------+-----------+--------+-------------+------+
+| id | nip   | nama          | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat | berat_badan | umur |
++----+-------+---------------+---------------+-----------+------------+----------+-----------+--------+-------------+------+
+|  1 | 11111 | Siti Rizkiyah | Perempuan     | Depok     | 0000-00-00 |        4 |         1 | depok  |          64 |   57 |
++----+-------+---------------+---------------+-----------+------------+----------+-----------+--------+-------------+------+
+1 row in set (0.001 sec)
+
+
+//27. Menampilkan jenis_kelamin(klausa non key)
+MariaDB [dbpegawai]> SELECT * FROM pegawai
+    -> WHERE jenis_kelamin = 'Laki-Laki';
++----+-------+-----------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+| id | nip   | nama            | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat  | berat_badan | umur |
++----+-------+-----------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+| 41 | 22237 | Zulfikar Rahman | Laki-Laki     | Bima      | 2003-12-04 |        3 |         3 | Bima    |          73 |   46 |
+| 42 | 22238 | Imam Zulfikar   | Laki-Laki     | Bima      | 2002-12-02 |        3 |         3 | Bima    |          74 |   27 |
+| 43 | 22239 | Muhammad Arief  | Laki-Laki     | Bekasi    | 2002-09-02 |        3 |         1 | Depok   |         111 |   56 |
+| 44 | 22240 | Iman Dafa       | Laki-Laki     | Bekasi    | 2008-09-07 |        3 |         2 | Bima    |          54 |   58 |
+| 46 | 22242 | Muhammad Agus   | Laki-Laki     | Aceh      | 2001-03-03 |        1 |         1 | Aceh    |          83 |   55 |
+| 47 | 22243 | Bagus Damar     | Laki-Laki     | Bali      | 2001-12-05 |        3 |         3 | Bali    |          47 |   57 |
+| 50 | 22246 | Ammar Deib      | Laki-Laki     | Bandung   | 2003-01-01 |        2 |         4 | Bandung |          73 |   57 |
+| 51 | 22247 | Reza Andin      | Laki-Laki     | Batam     | 2007-07-01 |        3 |         4 | Bali    |         102 |   35 |
+| 52 | 22248 | Izzul Mubarrok  | Laki-Laki     | Bima      | 2007-07-07 |        3 |         3 | Bali    |          92 |   26 |
++----+-------+-----------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+9 rows in set (0.001 sec)
+
+
+//28.Menampilkan beberapa NIP(klausa IN)
+MariaDB [dbpegawai]> SELECT * FROM pegawai
+    -> WHERE nip IN('22222','22232','22233');
++----+-------+---------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+| id | nip   | nama          | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat  | berat_badan | umur |
++----+-------+---------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+| 35 | 22222 | Siti Rizkiyah | Perempuan     | Bima      | 2004-09-13 |        4 |         3 | Bima    |          69 |   50 |
+| 36 | 22232 | Gita Farah S  | Perempuan     | Jakarta   | 2005-11-13 |        4 |         2 | Jakarta |         116 |   59 |
+| 37 | 22233 | Siti Sadiyah  | Perempuan     | Bogor     | 2006-09-01 |        4 |         3 | Bogor   |          94 |   44 |
++----+-------+---------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+3 rows in set (0.001 sec)
+
+
+//29. Menampilkan beberapa tempat lahir(NOT IN)
+MariaDB [dbpegawai]> SELECT * FROM pegawai
+    -> WHERE tmp_lahir NOT IN('Bima','Bandung','Bogor');
++----+-------+-----------------+---------------+------------+------------+----------+-----------+---------+-------------+------+
+| id | nip   | nama            | jenis_kelamin | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat  | berat_badan | umur |
++----+-------+-----------------+---------------+------------+------------+----------+-----------+---------+-------------+------+
+|  1 | 11111 | Siti Rizkiyah   | Perempuan     | Depok      | 0000-00-00 |        4 |         1 | depok   |          64 |   57 |
+| 36 | 22232 | Gita Farah S    | Perempuan     | Jakarta    | 2005-11-13 |        4 |         2 | Jakarta |         116 |   59 |
+| 40 | 22236 | Siti Khorunnisa | Perempuan     | Tanggerang | 2003-09-02 |        3 |         1 | Depok   |          57 |   35 |
+| 43 | 22239 | Muhammad Arief  | Laki-Laki     | Bekasi     | 2002-09-02 |        3 |         1 | Depok   |         111 |   56 |
+| 44 | 22240 | Iman Dafa       | Laki-Laki     | Bekasi     | 2008-09-07 |        3 |         2 | Bima    |          54 |   58 |
+| 46 | 22242 | Muhammad Agus   | Laki-Laki     | Aceh       | 2001-03-03 |        1 |         1 | Aceh    |          83 |   55 |
+| 47 | 22243 | Bagus Damar     | Laki-Laki     | Bali       | 2001-12-05 |        3 |         3 | Bali    |          47 |   57 |
+| 48 | 22244 | Selly Dea       | Perempuan     | Aceh       | 2001-09-04 |        3 |         2 | Batam   |         104 |   21 |
+| 49 | 22245 | Oktavia Putri   | Perempuan     | Aceh       | 2001-01-01 |        2 |         2 | Jakarta |         101 |   36 |
+| 51 | 22247 | Reza Andin      | Laki-Laki     | Batam      | 2007-07-01 |        3 |         4 | Bali    |         102 |   35 |
++----+-------+-----------------+---------------+------------+------------+----------+-----------+---------+-------------+------+
+10 rows in set (0.001 sec)
+
+
+//30. Menampilkan nama (asc)
+MariaDB [dbpegawai]> SELECT * FROM pegawai
+    -> ORDER BY nama ASC;
++----+-------+-----------------+---------------+------------+------------+----------+-----------+---------+-------------+------+
+| id | nip   | nama            | jenis_kelamin | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat  | berat_badan | umur |
++----+-------+-----------------+---------------+------------+------------+----------+-----------+---------+-------------+------+
+| 50 | 22246 | Ammar Deib      | Laki-Laki     | Bandung    | 2003-01-01 |        2 |         4 | Bandung |          73 |   57 |
+| 47 | 22243 | Bagus Damar     | Laki-Laki     | Bali       | 2001-12-05 |        3 |         3 | Bali    |          47 |   57 |
+| 36 | 22232 | Gita Farah S    | Perempuan     | Jakarta    | 2005-11-13 |        4 |         2 | Jakarta |         116 |   59 |
+| 42 | 22238 | Imam Zulfikar   | Laki-Laki     | Bima       | 2002-12-02 |        3 |         3 | Bima    |          74 |   27 |
+| 44 | 22240 | Iman Dafa       | Laki-Laki     | Bekasi     | 2008-09-07 |        3 |         2 | Bima    |          54 |   58 |
+| 39 | 22235 | Irdad Suryani   | Perempuan     | Bima       | 2002-12-16 |        3 |         3 | Bima    |          84 |   49 |
+| 52 | 22248 | Izzul Mubarrok  | Laki-Laki     | Bima       | 2007-07-07 |        3 |         3 | Bali    |          92 |   26 |
+| 46 | 22242 | Muhammad Agus   | Laki-Laki     | Aceh       | 2001-03-03 |        1 |         1 | Aceh    |          83 |   55 |
+| 43 | 22239 | Muhammad Arief  | Laki-Laki     | Bekasi     | 2002-09-02 |        3 |         1 | Depok   |         111 |   56 |
+| 38 | 22234 | Najwa Lutfiah   | Perempuan     | Bogor      | 2004-03-01 |        4 |         2 | Bogor   |          81 |   24 |
+| 49 | 22245 | Oktavia Putri   | Perempuan     | Aceh       | 2001-01-01 |        2 |         2 | Jakarta |         101 |   36 |
+| 45 | 22241 | Putri Tari      | Perempuan     | Bima       | 2008-11-07 |        2 |         2 | Kupang  |          57 |   26 |
+| 51 | 22247 | Reza Andin      | Laki-Laki     | Batam      | 2007-07-01 |        3 |         4 | Bali    |         102 |   35 |
+| 48 | 22244 | Selly Dea       | Perempuan     | Aceh       | 2001-09-04 |        3 |         2 | Batam   |         104 |   21 |
+| 40 | 22236 | Siti Khorunnisa | Perempuan     | Tanggerang | 2003-09-02 |        3 |         1 | Depok   |          57 |   35 |
+|  1 | 11111 | Siti Rizkiyah   | Perempuan     | Depok      | 0000-00-00 |        4 |         1 | depok   |          64 |   57 |
+| 35 | 22222 | Siti Rizkiyah   | Perempuan     | Bima       | 2004-09-13 |        4 |         3 | Bima    |          69 |   50 |
+| 37 | 22233 | Siti Sadiyah    | Perempuan     | Bogor      | 2006-09-01 |        4 |         3 | Bogor   |          94 |   44 |
+| 41 | 22237 | Zulfikar Rahman | Laki-Laki     | Bima       | 2003-12-04 |        3 |         3 | Bima    |          73 |   46 |
++----+-------+-----------------+---------------+------------+------------+----------+-----------+---------+-------------+------+
+19 rows in set (0.001 sec)
+
+
+//31. Menampilkan pegawai dari yang terberat ke yang teringan
+MariaDB [dbpegawai]> SELECT * FROM pegawai
+    -> ORDER BY berat_badan DESC;
++----+-------+-----------------+---------------+------------+------------+----------+-----------+---------+-------------+------+
+| id | nip   | nama            | jenis_kelamin | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat  | berat_badan | umur |
++----+-------+-----------------+---------------+------------+------------+----------+-----------+---------+-------------+------+
+| 36 | 22232 | Gita Farah S    | Perempuan     | Jakarta    | 2005-11-13 |        4 |         2 | Jakarta |         116 |   59 |
+| 43 | 22239 | Muhammad Arief  | Laki-Laki     | Bekasi     | 2002-09-02 |        3 |         1 | Depok   |         111 |   56 |
+| 48 | 22244 | Selly Dea       | Perempuan     | Aceh       | 2001-09-04 |        3 |         2 | Batam   |         104 |   21 |
+| 51 | 22247 | Reza Andin      | Laki-Laki     | Batam      | 2007-07-01 |        3 |         4 | Bali    |         102 |   35 |
+| 49 | 22245 | Oktavia Putri   | Perempuan     | Aceh       | 2001-01-01 |        2 |         2 | Jakarta |         101 |   36 |
+| 37 | 22233 | Siti Sadiyah    | Perempuan     | Bogor      | 2006-09-01 |        4 |         3 | Bogor   |          94 |   44 |
+| 52 | 22248 | Izzul Mubarrok  | Laki-Laki     | Bima       | 2007-07-07 |        3 |         3 | Bali    |          92 |   26 |
+| 39 | 22235 | Irdad Suryani   | Perempuan     | Bima       | 2002-12-16 |        3 |         3 | Bima    |          84 |   49 |
+| 46 | 22242 | Muhammad Agus   | Laki-Laki     | Aceh       | 2001-03-03 |        1 |         1 | Aceh    |          83 |   55 |
+| 38 | 22234 | Najwa Lutfiah   | Perempuan     | Bogor      | 2004-03-01 |        4 |         2 | Bogor   |          81 |   24 |
+| 42 | 22238 | Imam Zulfikar   | Laki-Laki     | Bima       | 2002-12-02 |        3 |         3 | Bima    |          74 |   27 |
+| 41 | 22237 | Zulfikar Rahman | Laki-Laki     | Bima       | 2003-12-04 |        3 |         3 | Bima    |          73 |   46 |
+| 50 | 22246 | Ammar Deib      | Laki-Laki     | Bandung    | 2003-01-01 |        2 |         4 | Bandung |          73 |   57 |
+| 35 | 22222 | Siti Rizkiyah   | Perempuan     | Bima       | 2004-09-13 |        4 |         3 | Bima    |          69 |   50 |
+|  1 | 11111 | Siti Rizkiyah   | Perempuan     | Depok      | 0000-00-00 |        4 |         1 | depok   |          64 |   57 |
+| 40 | 22236 | Siti Khorunnisa | Perempuan     | Tanggerang | 2003-09-02 |        3 |         1 | Depok   |          57 |   35 |
+| 45 | 22241 | Putri Tari      | Perempuan     | Bima       | 2008-11-07 |        2 |         2 | Kupang  |          57 |   26 |
+| 44 | 22240 | Iman Dafa       | Laki-Laki     | Bekasi     | 2008-09-07 |        3 |         2 | Bima    |          54 |   58 |
+| 47 | 22243 | Bagus Damar     | Laki-Laki     | Bali       | 2001-12-05 |        3 |         3 | Bali    |          47 |   57 |
++----+-------+-----------------+---------------+------------+------------+----------+-----------+---------+-------------+------+
+19 rows in set (0.001 sec)
+
+
+//32. Menampilkan 5 pegawai teratas dengan LIMIT dan OFFSET
+MariaDB [dbpegawai]> SELECT * FROM pegawai
+    -> LIMIT 5 OFFSET 0;
++----+-------+---------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+| id | nip   | nama          | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat  | berat_badan | umur |
++----+-------+---------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+|  1 | 11111 | Siti Rizkiyah | Perempuan     | Depok     | 0000-00-00 |        4 |         1 | depok   |          64 |   57 |
+| 35 | 22222 | Siti Rizkiyah | Perempuan     | Bima      | 2004-09-13 |        4 |         3 | Bima    |          69 |   50 |
+| 36 | 22232 | Gita Farah S  | Perempuan     | Jakarta   | 2005-11-13 |        4 |         2 | Jakarta |         116 |   59 |
+| 37 | 22233 | Siti Sadiyah  | Perempuan     | Bogor     | 2006-09-01 |        4 |         3 | Bogor   |          94 |   44 |
+| 38 | 22234 | Najwa Lutfiah | Perempuan     | Bogor     | 2004-03-01 |        4 |         2 | Bogor   |          81 |   24 |
++----+-------+---------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+5 rows in set (0.001 sec)
+
+//misal soalnya berksenambungan dengan soal sebelumnya(berat badan)
+MariaDB [dbpegawai]> SELECT * FROM pegawai
+    -> ORDER BY berat_badan DESC
+    -> LIMIT 5 OFFSET 0;
++----+-------+----------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+| id | nip   | nama           | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat  | berat_badan | umur |
++----+-------+----------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+| 36 | 22232 | Gita Farah S   | Perempuan     | Jakarta   | 2005-11-13 |        4 |         2 | Jakarta |         116 |   59 |
+| 43 | 22239 | Muhammad Arief | Laki-Laki     | Bekasi    | 2002-09-02 |        3 |         1 | Depok   |         111 |   56 |
+| 48 | 22244 | Selly Dea      | Perempuan     | Aceh      | 2001-09-04 |        3 |         2 | Batam   |         104 |   21 |
+| 51 | 22247 | Reza Andin     | Laki-Laki     | Batam     | 2007-07-01 |        3 |         4 | Bali    |         102 |   35 |
+| 49 | 22245 | Oktavia Putri  | Perempuan     | Aceh      | 2001-01-01 |        2 |         2 | Jakarta |         101 |   36 |
++----+-------+----------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+5 rows in set (0.000 sec)
+
+
+//33. Menampilkan 5 pegawai terbawah dengan LIMIT dan OFFSET
+MariaDB [dbpegawai]> SELECT * FROM pegawai
+    -> LIMIT 5 OFFSET 13;
++----+-------+---------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+| id | nip   | nama          | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat  | berat_badan | umur |
++----+-------+---------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+| 47 | 22243 | Bagus Damar   | Laki-Laki     | Bali      | 2001-12-05 |        3 |         3 | Bali    |          47 |   57 |
+| 48 | 22244 | Selly Dea     | Perempuan     | Aceh      | 2001-09-04 |        3 |         2 | Batam   |         104 |   21 |
+| 49 | 22245 | Oktavia Putri | Perempuan     | Aceh      | 2001-01-01 |        2 |         2 | Jakarta |         101 |   36 |
+| 50 | 22246 | Ammar Deib    | Laki-Laki     | Bandung   | 2003-01-01 |        2 |         4 | Bandung |          73 |   57 |
+| 51 | 22247 | Reza Andin    | Laki-Laki     | Batam     | 2007-07-01 |        3 |         4 | Bali    |         102 |   35 |
++----+-------+---------------+---------------+-----------+------------+----------+-----------+---------+-------------+------+
+5 rows in set (0.001 sec)
+
+//misal soalnya berksenambungan dengan soal sebelumnya(berat badan)
+MariaDB [dbpegawai]> SELECT * FROM pegawai
+    -> ORDER BY berat_badan DESC
+    -> LIMIT 5 OFFSET 13;
++----+-------+-----------------+---------------+------------+------------+----------+-----------+--------+-------------+------+
+| id | nip   | nama            | jenis_kelamin | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat | berat_badan | umur |
++----+-------+-----------------+---------------+------------+------------+----------+-----------+--------+-------------+------+
+| 35 | 22222 | Siti Rizkiyah   | Perempuan     | Bima       | 2004-09-13 |        4 |         3 | Bima   |          69 |   50 |
+|  1 | 11111 | Siti Rizkiyah   | Perempuan     | Depok      | 0000-00-00 |        4 |         1 | depok  |          64 |   57 |
+| 40 | 22236 | Siti Khorunnisa | Perempuan     | Tanggerang | 2003-09-02 |        3 |         1 | Depok  |          57 |   35 |
+| 45 | 22241 | Putri Tari      | Perempuan     | Bima       | 2008-11-07 |        2 |         2 | Kupang |          57 |   26 |
+| 44 | 22240 | Iman Dafa       | Laki-Laki     | Bekasi     | 2008-09-07 |        3 |         2 | Bima   |          54 |   58 |
++----+-------+-----------------+---------------+------------+------------+----------+-----------+--------+-------------+------+
+5 rows in set (0.000 sec)
+
+//34. Menampilkan jumlah pegawai(aggeragat count)
+MariaDB [dbpegawai]> SELECT COUNT(*) AS jumlah_pegawai FROM pegawai;
++----------------+
+| jumlah_pegawai |
++----------------+
+|             19 |
++----------------+
+1 row in set (0.000 sec)
+
+
+//35. Menampilkan nip,nama pegawai, umur yg paling tua gunakan fungsi aggregrat max (kombinasi dengan sub query)
+MariaDB [dbpegawai]> SELECT nip,nama,umur FROM pegawai WHERE umur =(SELECT MAX(umur)FROM pegawai);
++-------+--------------+------+
+| nip   | nama         | umur |
++-------+--------------+------+
+| 22232 | Gita Farah S |   59 |
++-------+--------------+------+
+1 row in set (0.001 sec)
+
+
+//36. menampilkan nip,nama pegawai, berat_badan yg paling kurus gunakan fungsi aggregrat min (kombinasi dengan sub query)
+MariaDB [dbpegawai]> SELECT nip,nama,berat_badan FROM pegawai WHERE berat_badan =(SELECT MIN(berat_badan)FROM pegawai);
++-------+-------------+-------------+
+| nip   | nama        | berat_badan |
++-------+-------------+-------------+
+| 22243 | Bagus Damar |          47 |
++-------+-------------+-------------+
+1 row in set (0.001 sec)
+
+ 
+//37. Menampilkan Umur rata-rata pegawai
+MariaDB [dbpegawai]> SELECT AVG(umur) AS umur_rata2 FROM pegawai;
++------------+
+| umur_rata2 |
++------------+
+|    43.0526 |
++------------+
+1 row in set (0.001 sec)
+
+
+//38.Menampilkan jumlah data pegawai yang laki2 dan berumur lebih dari 40 tahun dan berjabatan Manajer, gunakan fungsi aggregrat count dan klausa AND 
+MariaDB [dbpegawai]> SELECT COUNT(*) AS jml_manajer FROM pegawai
+    -> WHERE jenis_kelamin = 'Laki-Laki' AND umur > 40 AND idjabatan = 3;
++-------------+
+| jml_manajer |
++-------------+
+|           2 |
++-------------+
+1 row in set (0.001 sec)
+
+
+//39. Menampilkan jumlah data pegawai yang perempuan dan berumur kurang dari 40 tahun dan berjabatan Staff, gunakan fungsi aggregrat count dan klausa AND
+MariaDB [dbpegawai]> SELECT COUNT(*) AS jml_staff_Perempuan FROM pegawai
+    -> WHERE jenis_kelamin = 'Perempuan' AND umur < 40 AND idjabatan = 4;
++---------------------+
+| jml_staff_Perempuan |
++---------------------+
+|                   0 |
++---------------------+
+1 row in set (0.001 sec)
+
+ 
+//40. Menampilkan jumlah data pegawai yang perempuan gunakan fungsi aggregrat count
+MariaDB [dbpegawai]> SELECT COUNT(*) AS jml_karyawan_Perempuan FROM pegawai
+    -> WHERE jenis_kelamin = 'Perempuan';
++------------------------+
+| jml_karyawan_Perempuan |
++------------------------+
+|                     10 |
++------------------------+
+1 row in set (0.000 sec)
+
+
+//41. Menampilkan jumlah pegawai yang bekerja di divisi SDM dengan fungsi aggregrat sum dan klausa WHERE
+MariaDB [dbpegawai]> SELECT SUM(iddivisi) FROM pegawai WHERE iddivisi = 1;
++---------------+
+| SUM(iddivisi) |
++---------------+
+|             1 |
++---------------+
+1 row in set (0.001 sec)
+
+//bisa juga dengan querry CASE WHEN
+MariaDB [dbpegawai]> SELECT SUM(CASE WHEN iddivisi = ( SELECT iddivisi = 1) THEN 1 ELSE 0 END) AS jumlah_pegawai_SDM
+    -> FROM pegawai;
++--------------------+
+| jumlah_pegawai_SDM |
++--------------------+
+|                  1 |
++--------------------+
+1 row in set (0.001 sec)
+
+//42. Tampilkan jumlah pegawai berdasarkan divisi masing2 menggunakan fungsi aggregrat count dan klausa group by
+MariaDB [dbpegawai]> SELECT iddivisi, COUNT(*) AS jumlah_pegawai
+    -> FROM pegawai
+    -> GROUP BY iddivisi;
++----------+----------------+
+| iddivisi | jumlah_pegawai |
++----------+----------------+
+|        1 |              1 |
+|        2 |              3 |
+|        3 |             10 |
+|        4 |              5 |
++----------+----------------+
+4 rows in set (0.001 sec)
+
+//43. Menampilkan data jumlah pegawai berdasarkan gender, yg jumlah minimal 10 orang (gunakan group by dan having) 
+MariaDB [dbpegawai]> SELECT jenis_kelamin, COUNT(*) AS jumlah_pegawai
+    -> FROM pegawai
+    -> GROUP BY jenis_kelamin
+    -> HAVING COUNT(*) >= 10;
++---------------+----------------+
+| jenis_kelamin | jumlah_pegawai |
++---------------+----------------+
+| Perempuan     |             10 |
++---------------+----------------+
+1 row in set (0.001 sec)
+
+
+//44. Mencari data dengan nama depan muhammad
+MariaDB [dbpegawai]> SELECT*
+    -> FROM pegawai
+    -> WHERE nama LIKE 'Muhammad%';
++----+-------+----------------+---------------+-----------+------------+----------+-----------+--------+-------------+------+
+| id | nip   | nama           | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat | berat_badan | umur |
++----+-------+----------------+---------------+-----------+------------+----------+-----------+--------+-------------+------+
+| 43 | 22239 | Muhammad Arief | Laki-Laki     | Bekasi    | 2002-09-02 |        3 |         1 | Depok  |         111 |   56 |
+| 46 | 22242 | Muhammad Agus  | Laki-Laki     | Aceh      | 2001-03-03 |        1 |         1 | Aceh   |          83 |   55 |
++----+-------+----------------+---------------+-----------+------------+----------+-----------+--------+-------------+------+
+2 rows in set (0.001 sec) 
+
+//45. Mencari data dengan akhir Santoso
+MariaDB [dbpegawai]> SELECT*
+    -> FROM pegawai
+    -> WHERE nama LIKE '%Santoso';
+Empty set (0.001 sec)
+
+
+//46. mencari data yang mengandung nama Asep
+MariaDB [dbpegawai]> SELECT*
+    -> FROM pegawai
+    -> WHERE nama LIKE '%Asep%';
+Empty set (0.001 sec)
+
+
+//47. Mencari data nama dengan huruf kelima S
+MariaDB [dbpegawai]> SELECT*
+    -> FROM pegawai
+    -> WHERE nama LIKE '__S%';
++----+-------+-------------+---------------+-----------+------------+----------+-----------+--------+-------------+------+
+| id | nip   | nama        | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat | berat_badan | umur |
++----+-------+-------------+---------------+-----------+------------+----------+-----------+--------+-------------+------+
+| 47 | 22243 | Bagus Damar | Laki-Laki     | Bali      | 2001-12-05 |        3 |         3 | Bali   |          47 |   57 |
++----+-------+-------------+---------------+-----------+------------+----------+-----------+--------+-------------+------+
+1 row in set (0.000 sec)
+
+
+
